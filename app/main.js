@@ -1,5 +1,6 @@
 const regions = document.querySelectorAll(`.region`);
 const nameList = document.querySelector(`.name-list`);
+const spinner = document.querySelector(`.loader`);
 let myChart = document.querySelector(`#graphic`);
 
 regions.forEach((el) => {
@@ -10,6 +11,7 @@ regions.forEach((el) => {
 
 async function getRegionPopulation(region) {
     nameList.style.display = `block`;
+    spinner.style.display = `block`;
     deactivateButtons(regions);
     const regionCountryNames = [];
     const regionCountryPopulation = [];
@@ -33,14 +35,17 @@ async function getRegionPopulation(region) {
     } catch (error) {
         console.log(error);
     }
+    spinner.style.display = `none`;
     activateButtons(regions);
 }
 
 function getCountryPopulation(countryName) {
     nameList.style.display = `none`;
+    spinner.style.display = `block`;
+    destroyChart();
+    deactivateButtons(regions);
     const cityNames = [];
     const cityPopulation = [];
-    deactivateButtons(regions);
     const raw = {
         limit: 1000,
         order: "asc",
@@ -68,14 +73,11 @@ function getCountryPopulation(countryName) {
             });
         })
         .catch((error) => console.log(`Huston, we got a problem!!!`, error));
-    activateButtons(regions);
+    // activateButtons(regions);
 }
 
 function createChart(x, y) {
-    let chartStatus = Chart.getChart("graphic"); // <canvas> id
-    if (chartStatus != undefined) {
-        chartStatus.destroy();
-    }
+    destroyChart();
     let populationChart = new Chart(myChart, {
         type: `bar`,
         data: {
@@ -89,10 +91,13 @@ function createChart(x, y) {
         },
         options: {},
     });
+    spinner.style.display = `none`;
+    activateButtons(regions);
 }
 
 function addClickToCountry(countryButton) {
     countryButton.addEventListener(`click`, (e) => {
+        window.scrollTo({ top: 0, behavior: "auto" });
         getCountryPopulation(countryButton.textContent);
     });
 }
@@ -107,4 +112,11 @@ function activateButtons(buttonsList) {
     buttonsList.forEach((el) => {
         el.disabled = false;
     });
+}
+
+function destroyChart() {
+    let chartStatus = Chart.getChart("graphic"); // <canvas> id
+    if (chartStatus != undefined) {
+        chartStatus.destroy();
+    }
 }

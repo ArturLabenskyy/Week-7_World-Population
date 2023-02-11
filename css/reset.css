@@ -1,4 +1,4 @@
-
+@import url('https://fonts.googleapis.com/css2?family=Outfit&family=Poppins&family=Roboto&family=Rubik:ital@1&family=Russo+One&display=swap');
 *{
     padding: 0;
     margin: 0;
@@ -9,9 +9,9 @@
 
 
 html, body *{
-    font-family: amazon-ember, sans-serif;
+    font-family:'Roboto', sans-serif;
     text-align: left;
-    color: black;
+    color: #0A043C;
 }
 
 a {
