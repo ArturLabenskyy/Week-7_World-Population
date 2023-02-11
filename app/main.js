@@ -26,7 +26,6 @@ async function getRegionPopulation(region) {
             addClickToCountry(country);
             regionCountryNames.push(el.name.common);
             regionCountryPopulation.push(el.population);
-            // createChart(regionCountryNames, regionCountryPopulation);
         });
         createChart(regionCountryNames, regionCountryPopulation);
     } catch (error) {
@@ -40,59 +39,37 @@ function addClickToCountry(countryButton) {
     });
 }
 
-async function getCountryPopulation(countryName) {
+function getCountryPopulation(countryName) {
     const cityNames = [];
     const cityPopulation = [];
-    try {
-        const res = await fetch(
-            "https://countriesnow.space/api/v0.1/countries"
-        );
-        if (!res.ok) throw new Error(`Huston, we have a problem!!!`);
-        const data = await res.json();
-        nameList.innerHTML = ``;
-        data.data.forEach((el) => {
-            if (el.country === countryName) {
-                el.cities.forEach((cityName) => {
-                    // let city = document.createElement(`button`);
-                    // city.textContent = cityName;
-                    // city.classList.add(`bottom-btn`);
-                    // nameList.appendChild(city);
-                    // cityNames.push(cityName);
-                    getCityPopulation(cityName, cityPopulation, cityNames);
-                    // createChart(cityNames, cityPopulation);
 
-                    // cityPopulation.push(cityPop);
-                });
-            }
-        });
-        console.log(cityNames);
-        console.log(cityPopulation);
-        // createChart(cityNames, cityPopulation);
-    } catch (error) {
-        console.log(error);
-    }
-}
+    const raw = {
+        limit: 1000,
+        order: "asc",
+        orderBy: "name",
+        country: countryName,
+    };
 
-function getCityPopulation(cityName, populationArray, cityNameArray) {
-    fetch("https://countriesnow.space/api/v0.1/countries/population/cities", {
-        method: "POST",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            city: cityName,
-        }),
-    })
+    fetch(
+        "https://countriesnow.space/api/v0.1/countries/population/cities/filter",
+        {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(raw),
+        }
+    )
         .then((response) => response.json())
-        .then((response) => {
-            cityNameArray.push(response.data.city);
-            populationArray.push(response.data.populationCounts[0].value);
-            createChart(cityNameArray, populationArray);
-            // console.log(response.data.city);
-            // console.log(response.data.populationCounts[0].value);
+        .then((data) => {
+            data.data.forEach((el) => {
+                cityNames.push(el.city);
+                cityPopulation.push(el.populationCounts[0].value);
+                createChart(cityNames, cityPopulation);
+            });
         })
-        .catch((error) => console.log(`We have some problem`, error));
+        .catch((error) => console.log(`Huston, we got a problem!!!`, error));
 }
 
 function createChart(x, y) {
@@ -112,5 +89,11 @@ function createChart(x, y) {
             ],
         },
         options: {},
+    });
+}
+
+function addClickToCountry(countryButton) {
+    countryButton.addEventListener(`click`, (e) => {
+        getCountryPopulation(countryButton.textContent);
     });
 }
