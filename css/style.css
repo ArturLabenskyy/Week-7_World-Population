@@ -6,7 +6,6 @@ body {
 
 button {
     background-color: #FFE3D8;
-    /* color: #03506F; */
 }
 
 button:hover {
@@ -69,7 +68,7 @@ h1 {
     display: none;
     width: 48px;
     height: 24px;
-    color: #03506F;
+    color: #0A043C;
     background: currentColor;
     border-radius: 50% 50% 0 0;
     position: relative;
