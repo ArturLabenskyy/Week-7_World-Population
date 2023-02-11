@@ -9,6 +9,8 @@ regions.forEach((el) => {
 });
 
 async function getRegionPopulation(region) {
+    nameList.style.display = `block`;
+    deactivateButtons(regions);
     const regionCountryNames = [];
     const regionCountryPopulation = [];
     try {
@@ -31,18 +33,14 @@ async function getRegionPopulation(region) {
     } catch (error) {
         console.log(error);
     }
-}
-
-function addClickToCountry(countryButton) {
-    countryButton.addEventListener(`click`, (e) => {
-        getCountryPopulation(countryButton.textContent);
-    });
+    activateButtons(regions);
 }
 
 function getCountryPopulation(countryName) {
+    nameList.style.display = `none`;
     const cityNames = [];
     const cityPopulation = [];
-
+    deactivateButtons(regions);
     const raw = {
         limit: 1000,
         order: "asc",
@@ -70,6 +68,7 @@ function getCountryPopulation(countryName) {
             });
         })
         .catch((error) => console.log(`Huston, we got a problem!!!`, error));
+    activateButtons(regions);
 }
 
 function createChart(x, y) {
@@ -95,5 +94,17 @@ function createChart(x, y) {
 function addClickToCountry(countryButton) {
     countryButton.addEventListener(`click`, (e) => {
         getCountryPopulation(countryButton.textContent);
+    });
+}
+
+function deactivateButtons(buttonsList) {
+    buttonsList.forEach((el) => {
+        el.disabled = true;
+    });
+}
+
+function activateButtons(buttonsList) {
+    buttonsList.forEach((el) => {
+        el.disabled = false;
     });
 }
