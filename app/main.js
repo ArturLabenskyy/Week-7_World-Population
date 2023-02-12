@@ -73,7 +73,6 @@ function getCountryPopulation(countryName) {
             });
         })
         .catch((error) => console.log(`Huston, we got a problem!!!`, error));
-    // activateButtons(regions);
 }
 
 function createChart(x, y) {
